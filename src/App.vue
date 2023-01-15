@@ -1,8 +1,8 @@
 <template>
     <div id="app">
         <TodoHeader />
-        <TodoInput @addTodoItem="addOneItem" />
-        <TodoList :propsData="todoItems" @removeItem="removeOneItem" @toggleItem="toggleOneItem" />
+        <TodoInput />
+        <TodoList />
         <TodoFooter />
     </div>
 </template>
@@ -20,36 +20,6 @@ export default {
         TodoInput,
         TodoList,
         TodoFooter,
-    },
-    data() {
-        return {
-            todoItems: [],
-        };
-    },
-    created() {
-        if (localStorage.length > 0) {
-            for (var index = 0; index < localStorage.length; index++) {
-                if (localStorage.key(index) !== "loglevel:webpack-dev-server") {
-                    this.todoItems.push(JSON.parse(localStorage.getItem(localStorage.key(index))));
-                }
-            }
-        }
-    },
-    methods: {
-        addOneItem(todoItem) {
-            var obj = { completed: false, item: todoItem };
-            localStorage.setItem(todoItem, JSON.stringify(obj));
-            this.todoItems.push(obj);
-        },
-        removeOneItem(todoItem, index) {
-            localStorage.removeItem(todoItem.item);
-            this.todoItems.splice(index, 1);
-        },
-        toggleOneItem(todoItem, index) {
-            todoItem.completed = !todoItem.completed;
-            localStorage.removeItem(todoItem.item);
-            localStorage.setItem(todoItem.item, JSON.stringify(todoItem));
-        },
     },
 };
 </script>

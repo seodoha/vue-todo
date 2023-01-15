@@ -1,33 +1,42 @@
 <template>
     <div>
-        <ul>
-            <li v-for="(todoItem, index) in propsData" :key="index" class="shadow">
-                <i class="fa-solid fa-check checkBtn" :class="{ checkBtnCompleted: todoItem.completed }" @click="toggleComplete(todoItem, index)"></i>
+        <TransitionGroup name="list" tag="ul">
+            <li v-for="(todoItem, index) in this.todoItems" :key="index" class="shadow">
+                <i
+                    class="fa-solid fa-check checkBtn"
+                    :class="{ checkBtnCompleted: todoItem.completed }"
+                    @click="toggleComplete({ todoItem, index })"
+                ></i>
                 <span :class="{ textCompleted: todoItem.completed }">{{ todoItem.item }}</span>
-                <span class="removeBtn" @click="removeTodo(todoItem, index)">
+                <span class="removeBtn" @click="removeTodo({ todoItem, index })">
                     <i class="fa-solid fa-trash-can"></i>
                 </span>
             </li>
-        </ul>
+        </TransitionGroup>
     </div>
 </template>
 
 <script>
+import { mapGetters, mapMutations, mapActions } from "vuex";
 export default {
-    props: ["propsData"],
+    computed: {
+        //...mapGetters(["storedTodoItems"]),
+        ...mapGetters({
+            todoItems: "storedTodoItems",
+        }),
+    },
     methods: {
-        removeTodo(todoItem, index) {
-            this.$emit("removeItem", todoItem, index);
-        },
-        toggleComplete(todoItem, index) {
-            this.$emit("toggleItem", todoItem, index);
-        },
+        ...mapMutations({
+            removeTodo: "removeOneItem",
+            toggleComplete: "toggleOneItem",
+        }),
     },
 };
 </script>
 
 <style scoped>
 ul {
+    position: relative;
     list-style-type: none;
     padding-left: 0;
     margin-top: 0;
@@ -35,6 +44,7 @@ ul {
 }
 li {
     display: flex;
+    width: 100%;
     min-height: 50px;
     height: 50px;
     line-height: 50px;
@@ -42,6 +52,7 @@ li {
     padding: 0 0.9rem;
     background: white;
     border-radius: 5px;
+    box-sizing: border-box;
 }
 .checkBtn {
     margin-right: 5px;
@@ -60,5 +71,18 @@ li {
 .textCompleted {
     text-decoration: line-through;
     color: #b3adad;
+}
+
+.list-enter-active,
+.list-leave-active {
+    transition: all 0.5s ease;
+}
+.list-enter-from,
+.list-leave-to {
+    opacity: 0;
+    transform: translateX(30px);
+}
+.list-leave-active {
+    position: absolute;
 }
 </style>

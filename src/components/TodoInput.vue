@@ -4,21 +4,33 @@
         <span class="addContainer" @click="addToDo">
             <i class="fa-solid fa-plus addBtn"></i>
         </span>
+        <Modal v-if="showModal" @close="showModal = false">
+            <h3 slot="header">경고!<i class="fa-x fa-solid closeModalBtn" @click="showModal = false"></i></h3>
+            <p slot="body">무언가를 입력하세요.</p>
+        </Modal>
     </div>
 </template>
 
 <script>
+import Modal from "./common/Modal.vue";
+
 export default {
+    components: {
+        Modal,
+    },
     data() {
         return {
             newTodoItem: "",
+            showModal: false,
         };
     },
     methods: {
         addToDo() {
             if (this.newTodoItem !== "") {
-                this.$emit("addTodoItem", this.newTodoItem);
+                this.$store.commit("addOneItem", this.newTodoItem);
                 this.clearInput();
+            } else {
+                this.showModal = !this.showModal;
             }
         },
         clearInput() {
@@ -61,5 +73,9 @@ input:focus {
 .addBtn {
     color: white;
     vertical-align: middle;
+}
+.closeModalBtn {
+    color: #42b983;
+    cursor: pointer;
 }
 </style>
